@@ -2,6 +2,7 @@ package com.anfinity.simpletodoapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         items.add(newItem);
         itemsAdapter.notifyDataSetChanged();
 
+        Log.i("onAddItem", "Item added to list");
+
         //Empties the Text Field
         etNewItem.setText("");
 
@@ -57,10 +60,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListViewListener(){
+        Log.i("MainActivity", "Setting up Listener on list View");
         this.lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.i("MainActivity", "Item Removed From list: " + position);
                 //remove item at the position of the list
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
