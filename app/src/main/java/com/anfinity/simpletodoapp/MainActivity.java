@@ -10,6 +10,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,14 +28,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        items = new ArrayList<>();
+        //read filesystem items. If DNE, create new arrayList
+        readItems();
+
+        //initializes variables
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(itemsAdapter);
 
         //test data
-        items.add("First item");
-        items.add("Second item");
+//        items.add("First item");
+//        items.add("Second item");
+
 
         setupListViewListener();
     }
@@ -52,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("onAddItem", "Item added to list");
 
+        //Write to the local file
+        writeItems();
+
         //Empties the Text Field
         etNewItem.setText("");
 
@@ -69,8 +81,32 @@ public class MainActivity extends AppCompatActivity {
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
 
+                //Write to the local file
+                writeItems();
+
                 return true;
             }
         });
+    }
+
+    private File getDataFile(){
+        return new File(getFilesDir(), "todo.txt");
+    }
+
+    private void readItems(){
+        try {
+            items = new ArrayList<>(FileUtils.readLines(getDataFile(),Charset.defaultCharset()));
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error Reading File.",e);
+            items = new ArrayList<>();
+        }
+    }
+
+    private void writeItems(){
+        try {
+            FileUtils.writeLines(getDataFile(), items);
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error Writing to File.",e);
+        }
     }
 }
