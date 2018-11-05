@@ -21,7 +21,14 @@ The following **additional** features are implemented:
 
 * [ ] List anything else that you can get done to improve the app functionality!
 
-## [Video tutorial](https://www.youtube.com/watch?v=yFdknCMrNAw&list=PLrT2tZ9JRrf6RMpaoVE3Vsfs6bXhfaIX1)
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
+
 
 ## Notes
 
