@@ -1,5 +1,6 @@
 package com.anfinity.simpletodoapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    //a numberic code to identify the edit activity
+    public final static int EDIT_REQUEST_CODE =20;
+    //keys used for passing data between activities
+    public final static String ITEM_TEXT = "itemText";
+    public final static String ITEM_POSITION = "itemPosition";
+
 
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
@@ -39,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         //test data
 //        items.add("First item");
 //        items.add("Second item");
-
 
         setupListViewListener();
     }
@@ -87,6 +94,44 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        //set up item listener for edit (regular click)
+        this.lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //create new activity
+                Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+                //pass the data being edited
+                i.putExtra(ITEM_TEXT, items.get(position));
+                i.putExtra(ITEM_POSITION, position);
+
+                //display the activity
+                startActivityForResult(i, EDIT_REQUEST_CODE);
+            }
+        });
+    }
+
+    //handle results form the edit activity
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //check for proper activity code
+        if (resultCode == RESULT_OK && requestCode == EDIT_REQUEST_CODE){
+            //extract updated item
+            String updatedItem = data.getExtras().getString(ITEM_TEXT);
+            int position = data.getExtras().getInt(ITEM_POSITION);
+
+            //updata model, view and local file
+            items.set(position, updatedItem);
+            writeItems();
+            itemsAdapter.notifyDataSetChanged();
+
+            //notify user of change
+            Toast.makeText(getApplicationContext(), "Updated item: "+ position, Toast.LENGTH_SHORT);
+        }
     }
 
     private File getDataFile(){
